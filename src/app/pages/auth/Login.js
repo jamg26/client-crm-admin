@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import { TextField } from "@material-ui/core";
 import clsx from "clsx";
 import * as auth from "../../store/ducks/auth.duck";
-import { login } from "../../crud/auth.crud";
+import { login } from "../../services/user.service";
 
 function Login(props) {
   const { intl } = props;

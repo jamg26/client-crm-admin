@@ -3,7 +3,7 @@ import {
   ME_URL,
   REGISTER_URL,
   REQUEST_PASSWORD_URL
-} from "../../app/crud/auth.crud";
+} from "../../app/services/user.service";
 import userTableMock from "./userTableMock";
 
 export default function mockAuth(mock) {

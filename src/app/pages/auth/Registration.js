@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Checkbox, FormControlLabel, TextField } from "@material-ui/core";
 import * as auth from "../../store/ducks/auth.duck";
-import { register } from "../../crud/auth.crud";
+import { register } from "../../services/user.service";
 
 function Registration(props) {
   const { intl } = props;
