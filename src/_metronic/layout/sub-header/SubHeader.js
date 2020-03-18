@@ -2,20 +2,55 @@
 import React from "react";
 import { connect } from "react-redux";
 import objectPath from "object-path";
-import { withRouter } from "react-router-dom";
+import { withRouter, useHistory  } from "react-router-dom";
 import { QuickActions } from "./components/QuickActions";
 import { LayoutContextConsumer } from "../LayoutContext";
 import { ReactComponent as SortNum1Icon } from "../../../_metronic/layout/assets/layout-svg-icons/SortNum1.svg";
 import * as builder from "../../ducks/builder";
+import { titleCase, removeWhiteSpace } from '../../utils/utils'
 // import BreadCrumbs from "./components/BreadCrumbs";
 
 class SubHeader extends React.Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      title : ""
+    }
+    this.addNew = this.addNew.bind(this);
+  }
+
+  addNew(){
+      let title = this.props.location.pathname.replace(/[^a-zA-Z ]/g, " ");
+      this.setState({title : title})
+      let newTitle = removeWhiteSpace(title);
+      switch(newTitle) {
+        case 'business':
+          this.props.history.push('/business/create');
+          break;
+        case 'businesscreate':
+          this.props.history.push('/business');
+          break;
+        default: this.props.history.push('/dashboard');
+    }
+  }
+
+
+
+  verifyTitle(){
+    let title = removeWhiteSpace(this.state.title);
+    return title.includes('create');
+  }
+
+
+
   render() {
     const {
       subheaderCssClasses,
       subheaderContainerCssClasses,
       subheaderMobileToggle
     } = this.props;
+
     return (
       <div
         id="kt_subheader"
@@ -37,7 +72,7 @@ class SubHeader extends React.Component {
 
               {({ subheader: { title } }) => (
                 <>
-                  <h3 className="kt-subheader__title">{title}</h3>
+                  <h3 className="kt-subheader__title">{title ? title : titleCase(this.state.title)}</h3>
                   {/*<BreadCrumbs items={breadcrumb} />*/}
                 </>
               )}
@@ -45,12 +80,18 @@ class SubHeader extends React.Component {
 
             <span className="kt-subheader__separator kt-subheader__separator--v" />
             <span className="kt-subheader__desc">#XRS-45670</span>
-            <a
-              href="#"
+            {/* <a
+              href=""
               className="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10"
             >
               Add New
-            </a>
+            </a> */}
+            <button
+              onClick={this.addNew} 
+              type="button"
+              className="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
+                 Add new
+              </button>
           </div>
 
           <div className="kt-subheader__toolbar">
