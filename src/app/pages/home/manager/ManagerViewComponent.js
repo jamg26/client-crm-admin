@@ -17,7 +17,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import Tooltip from '@material-ui/core/Tooltip';
-import { getUserAdmin } from '../../../services/manager.service';
+import { getUserAdmin, getUserAdminById, deleteUserAdmin } from '../../../services/manager.service';
 import Chip from '@material-ui/core/Chip';
 
 const useStyles1 = makeStyles(theme => ({
@@ -110,18 +110,28 @@ function Manager(props) {
     setPage(0);
   };
 
-  // const editBusiness = (id) => {
-  //   getBusinessById(id)
-  //     .then((results) => {
-  //       console.log(props)
-  //       props.props.history.push(`/business/${id}`, {
-  //         data: results.data,
-  //       });
-  //     })
-  //     .catch((err) => {
-  //       console.log(err)
-  //     })
-  // }
+  const editUserAdmin = (id) => {
+    getUserAdminById(id)
+      .then((results) => {
+        props.props.history.push(`/manager/${id}`, {
+          data: results.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
+  const deleteuser = (id) => {
+    deleteUserAdmin(id)
+      .then((results) => {
+        console.log(results)
+        props.props.history.push('/manager');
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
 
   return (
     <Paper>
@@ -156,12 +166,12 @@ function Manager(props) {
               </TableCell>
               <TableCell align="right">
                 <Tooltip title="Delete">
-                  <IconButton aria-label="Delete">
+                  <IconButton aria-label="Delete" onClick={ () => deleteuser(row.id) }>
                     <DeleteIcon />
                   </IconButton>
               </Tooltip>
               <Tooltip title="Edit">
-                  <IconButton aria-label="Edit">
+                  <IconButton aria-label="Edit" onClick={ () => editUserAdmin(row.id)}>
                     <EditIcon />
                   </IconButton>
               </Tooltip>
