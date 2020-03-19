@@ -19,7 +19,7 @@ export default function AuthPage() {
             <div
               className="kt-grid__item kt-grid__item--order-tablet-and-mobile-2 kt-grid kt-grid--hor kt-login__aside"
               style={{
-                backgroundImage: `url(${toAbsoluteUrl("/media/bg/bg-9.jpg")})`
+                backgroundImage: `url(${toAbsoluteUrl("/media/bg/crm-netwrok-login-img.png")})`
               }}
             >
               <div className="kt-grid__item">
