@@ -24,13 +24,15 @@ class SubHeader extends React.Component {
       let title = this.props.location.pathname.replace(/[^a-zA-Z ]/g, " ");
       this.setState({title : title})
       let newTitle = removeWhiteSpace(title);
-      console.log(newTitle)
       switch(newTitle) {
         case 'business':
           this.props.history.push('/business/create');
           break;
         case 'businesscreate':
           this.props.history.push('/business');
+          break;
+        case 'manager':
+          this.props.history.push('/manager/create');
           break;
         default: this.props.history.push('/dashboard');
     }
@@ -42,8 +44,6 @@ class SubHeader extends React.Component {
     let title = removeWhiteSpace(this.state.title);
     return title.includes('create');
   }
-
-
 
   render() {
     const {
@@ -95,7 +95,7 @@ class SubHeader extends React.Component {
               </button>
           </div>
 
-          <div className="kt-subheader__toolbar">
+          {/* <div className="kt-subheader__toolbar">
             <div className="kt-subheader__wrapper">
               <button type="button" className="btn kt-subheader__btn-primary">
                 Actions &nbsp;
@@ -103,7 +103,7 @@ class SubHeader extends React.Component {
               </button>
               <QuickActions />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     );

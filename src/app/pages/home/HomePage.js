@@ -13,6 +13,10 @@ const SubscriptionComponent = lazy(() =>
   import("./subscriptions/SubscriptionComponent")
 );
 
+const ManagerComponent = lazy(() =>
+  import("./manager/ManagerComponent")
+);
+
 export default function HomePage() {
   // useEffect(() => {
   //   console.log('Home page');
@@ -29,6 +33,7 @@ export default function HomePage() {
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/users" component={SubscriptionComponent} />
         <Route path="/business" component={BusinessComponent} />
+        <Route path="/manager" component={ManagerComponent} />
       </Switch>
     </Suspense>
   );

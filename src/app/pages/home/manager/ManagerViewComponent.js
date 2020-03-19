@@ -17,8 +17,8 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import Tooltip from '@material-ui/core/Tooltip';
+import { getUserAdmin } from '../../../services/manager.service';
 import Chip from '@material-ui/core/Chip';
-import { getBusiness, getBusinessById } from '../../../services/business.service';
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -93,7 +93,7 @@ const useStyles2 = makeStyles({
   },
 });
 
-function Business(props) {
+function Manager(props) {
   rows = props.data.row;
   const classes = useStyles2();
   const [page, setPage] = React.useState(0);
@@ -110,18 +110,18 @@ function Business(props) {
     setPage(0);
   };
 
-  const editBusiness = (id) => {
-    getBusinessById(id)
-      .then((results) => {
-        console.log(props)
-        props.props.history.push(`/business/${id}`, {
-          data: results.data,
-        });
-      })
-      .catch((err) => {
-        console.log(err)
-      })
-  }
+  // const editBusiness = (id) => {
+  //   getBusinessById(id)
+  //     .then((results) => {
+  //       console.log(props)
+  //       props.props.history.push(`/business/${id}`, {
+  //         data: results.data,
+  //       });
+  //     })
+  //     .catch((err) => {
+  //       console.log(err)
+  //     })
+  // }
 
   return (
     <Paper>
@@ -129,7 +129,6 @@ function Business(props) {
       <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="left">Business Name</TableCell>
             <TableCell align="left">Email</TableCell>
             <TableCell align="left">Phone</TableCell>
             <TableCell align="right">Active</TableCell>
@@ -143,16 +142,15 @@ function Business(props) {
           ).map(row => (
             <TableRow key={row.id}>
               <TableCell component="th" scope="row">
-                {row.name ? row.name : ''}
+                {row.firstName ? row.firstName : ''} { row.lastName ? row.lastName : '' }
               </TableCell>
-              <TableCell align="left">{row.businessName}</TableCell>
               <TableCell align="left">{row.email}</TableCell>
               <TableCell align="left">{row.phone}</TableCell>
               <TableCell align="right">
-                { row.active && 
+                { row.hasCRMAdminRole && 
                   <Chip color="primary" label="Active" />
                 }
-                { !row.active && 
+                { !row.hasCRMAdminRole && 
                   <Chip color="secondary" label="Inactive" />
                 }
               </TableCell>
@@ -163,7 +161,7 @@ function Business(props) {
                   </IconButton>
               </Tooltip>
               <Tooltip title="Edit">
-                  <IconButton aria-label="Edit" onClick={ () => editBusiness(row.id) }>
+                  <IconButton aria-label="Edit">
                     <EditIcon />
                   </IconButton>
               </Tooltip>
@@ -201,7 +199,7 @@ function Business(props) {
 }
 
 
-class BusinessViewComponents extends React.Component {
+class ManagerViewComponent extends React.Component {
 
   constructor(props){
     super(props);
@@ -211,7 +209,7 @@ class BusinessViewComponents extends React.Component {
   }
 
   componentDidMount(){
-    getBusiness()
+    getUserAdmin()
       .then((results) => {
         this.setState({row:results.data})
       })
@@ -219,9 +217,9 @@ class BusinessViewComponents extends React.Component {
 
   render() {
     return(
-      <Business data={this.state} props={this.props}/>
+      <Manager data={this.state} props={this.props}/>
     )
   }
 }
 
-export default BusinessViewComponents;
+export default ManagerViewComponent;

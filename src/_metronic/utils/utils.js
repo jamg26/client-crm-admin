@@ -11,7 +11,7 @@ export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;
 
 export const getFirstLetter = (name) => {
   if (name) {
-    name.charAt(0);
+    return name.charAt(0);
   }
 };
 

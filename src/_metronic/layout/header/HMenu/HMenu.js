@@ -26,7 +26,7 @@ class HMenu extends React.Component {
     let result = "logo-light.png";
     console.log("this.props.headerSelfSkin", this.props.headerSelfSkin);
     if (this.props.headerSelfSkin && this.props.headerSelfSkin !== "dark") {
-      result = "logo-dark.png";
+      result = "logo-thecrmnetwork-dark.png";
     }
     return toAbsoluteUrl(`/media/logos/${result}`);
   }

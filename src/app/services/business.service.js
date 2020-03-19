@@ -9,7 +9,7 @@ export function getBusiness() {
 }
 
 export function saveBusiness(business) {
-  return axios.get(`${ROOT_URL}/${ROOT_BUSINESS}`, { business });
+  return axios.post(`${ROOT_URL}/${ROOT_BUSINESS}`, business);
 }
 
 export function getBusinessById(id){
@@ -17,7 +17,7 @@ export function getBusinessById(id){
 }
 
 export function updateBusiness(business) {
-  return axios.patch(`${ROOT_URL}/${ROOT_BUSINESS}`, { business });
+  return axios.patch(`${ROOT_URL}/${ROOT_BUSINESS}`,  business);
 }
 
 // export function editBusiness(id) {

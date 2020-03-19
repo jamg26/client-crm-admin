@@ -8,7 +8,7 @@ export const initLayoutConfig = {
     // body: { "background-image": toAbsoluteUrl("/media/misc/bg-1.jpg") },
     logo: {
       dark: toAbsoluteUrl("/media/logos/logo-light.png"),
-      light: toAbsoluteUrl("/media/logos/logo-dark.png"),
+      light: toAbsoluteUrl("/media/logos/logo-thecrmnetwork-dark.png"),
       brand: toAbsoluteUrl("/media/logos/logo-light.png"),
       green: toAbsoluteUrl("/media/logos/logo-light.png")
     }
