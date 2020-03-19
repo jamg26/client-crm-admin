@@ -24,6 +24,7 @@ class SubHeader extends React.Component {
       let title = this.props.location.pathname.replace(/[^a-zA-Z ]/g, " ");
       this.setState({title : title})
       let newTitle = removeWhiteSpace(title);
+      console.log(newTitle)
       switch(newTitle) {
         case 'business':
           this.props.history.push('/business/create');

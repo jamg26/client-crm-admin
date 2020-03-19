@@ -11,10 +11,13 @@ import TableHead from '@material-ui/core/TableHead';
 import Paper from '@material-ui/core/Paper';
 import IconButton from '@material-ui/core/IconButton';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
+import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
-import { getBusiness } from '../../../services/business.service';
+import Tooltip from '@material-ui/core/Tooltip';
+import { getBusiness, getBusinessById } from '../../../services/business.service';
 
 const useStyles1 = makeStyles(theme => ({
   root: {
@@ -106,6 +109,19 @@ function Business(props) {
     setPage(0);
   };
 
+  const editBusiness = (id) => {
+    getBusinessById(id)
+      .then((results) => {
+        console.log(props)
+        props.props.history.push(`/business/${id}`, {
+          data: results.data,
+        });
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }
+
   return (
     <Paper>
       <Table className={classes.table} aria-label="custom pagination table">
@@ -116,6 +132,7 @@ function Business(props) {
             <TableCell align="left">Email</TableCell>
             <TableCell align="left">Phone</TableCell>
             <TableCell align="right">Active</TableCell>
+            <TableCell align="right">Action</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -131,6 +148,18 @@ function Business(props) {
               <TableCell align="left">{row.email}</TableCell>
               <TableCell align="left">{row.phone}</TableCell>
               <TableCell align="right"> {`${row.active}`} </TableCell>
+              <TableCell align="right">
+                <Tooltip title="Delete">
+                  <IconButton aria-label="Delete">
+                    <DeleteIcon />
+                  </IconButton>
+              </Tooltip>
+              <Tooltip title="Edit">
+                  <IconButton aria-label="Edit" onClick={ () => editBusiness(row.id) }>
+                    <EditIcon />
+                  </IconButton>
+              </Tooltip>
+              </TableCell>
             </TableRow>
           ))}
 
@@ -176,14 +205,13 @@ class BusinessViewComponents extends React.Component {
   componentDidMount(){
     getBusiness()
       .then((results) => {
-        console.log(results);
         this.setState({row:results.data})
       })
   }
 
   render() {
     return(
-      <Business data={this.state}/>
+      <Business data={this.state} props={this.props}/>
     )
   }
 }
