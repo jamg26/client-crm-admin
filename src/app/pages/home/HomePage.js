@@ -1,16 +1,16 @@
 import React, { Suspense, lazy } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import Dashboard from "./Dashboard";
-import Subscriptions from "./subscriptions/Subscriptions";
-import BusinessComponents from "./business/BusinessComponents";
+
 
 import { LayoutSplashScreen } from "../../../_metronic";
 
-const GoogleMaterialPage = lazy(() =>
-  import("./google-material/GoogleMaterialPage")
+const BusinessComponent = lazy(() =>
+  import("./business/BusinessComponent")
 );
-const ReactBootstrapPage = lazy(() =>
-  import("./react-bootstrap/ReactBootstrapPage")
+
+const SubscriptionComponent = lazy(() =>
+  import("./subscriptions/SubscriptionComponent")
 );
 
 export default function HomePage() {
@@ -27,8 +27,8 @@ export default function HomePage() {
           <Redirect exact from="/" to="/dashboard" />
         }
         <Route path="/dashboard" component={Dashboard} />
-        <Route path="/users" component={Subscriptions} />
-        <Route path="/business" component={BusinessComponents} />
+        <Route path="/users" component={SubscriptionComponent} />
+        <Route path="/business" component={BusinessComponent} />
       </Switch>
     </Suspense>
   );
