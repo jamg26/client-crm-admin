@@ -38,6 +38,14 @@ export default {
         translate: "",
         bullet: "dot"
       },
+      {
+        title: "Support Request",
+        root: true,
+        icon: "flaticon-support",
+        page: "supportrequest",
+        translate: "",
+        bullet: "dot"
+      },
     ]
   }
 };
