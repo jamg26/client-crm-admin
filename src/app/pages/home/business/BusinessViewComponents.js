@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
-import { getBusiness, getBusinessById } from '../../../services/business.service';
+import { getBusiness, updateBusiness, saveBusiness } from '../../../services/business.service';
 
 const BusinessViewComponents = () => {
   const [state, setState] = useState(0);
@@ -13,8 +13,7 @@ const BusinessViewComponents = () => {
           { title: 'Name', field: 'name' },
           { title: 'Business Name', field: 'businessName' },
           { title: 'Email', field: 'email' },
-          { title: 'Phone', field: 'phone'},
-          { title: 'Active', field: 'active'},
+          { title: 'Phone', field: 'phone'}
         ],
         data : response.data
       });
@@ -30,27 +29,32 @@ const BusinessViewComponents = () => {
       editable={{
         onRowAdd: newData =>
           new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-              setState(prevState => {
-                const data = [...prevState.data];
-                data.push(newData);
-                return { ...prevState, data };
-              });
-            }, 600);
-          }),
-        onRowUpdate: (newData, oldData) =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-              if (oldData) {
+            saveBusiness(newData)
+              .then((result) => {
+                resolve();
                 setState(prevState => {
                   const data = [...prevState.data];
-                  data[data.indexOf(oldData)] = newData;
+                  data.push(newData);
                   return { ...prevState, data };
                 });
-              }
-            }, 600);
+              })
+          }),
+        onRowUpdate: (newData, oldData) =>
+           new Promise((resolve, reject) => {
+            updateBusiness(newData)
+              .then((result) => {
+                resolve();
+                if (oldData) {
+                  setState(prevState => {
+                    const data = [...prevState.data];
+                    data[data.indexOf(oldData)] = newData;
+                    return { ...prevState, data };
+                  });
+                }
+              })
+              .catch((err) => {
+                reject(err)
+              })
           }),
         onRowDelete: oldData =>
           new Promise(resolve => {
