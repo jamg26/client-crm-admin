@@ -87,12 +87,12 @@ class SubHeader extends React.Component {
             >
               Add New
             </a> */}
-            <button
+            {/* <button
               onClick={this.addNew} 
               type="button"
               className="btn btn-label-warning btn-bold btn-sm btn-icon-h kt-margin-l-10">
                  Add new
-              </button>
+              </button> */}
           </div>
 
           {/* <div className="kt-subheader__toolbar">

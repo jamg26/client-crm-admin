@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
-import { getBusiness, updateBusiness, saveBusiness } from '../../../services/business.service';
+import { getUserAdmin, saveUserAdmin, updateUserAdmin, deleteUserAdmin } from '../../../../services/manager.service';
 
-const BusinessViewComponents = () => {
+const BusinessViewComponent = () => {
   const [state, setState] = useState(0);
   
   useEffect(() => {
     const fetchData = async () => {
-    const response = await getBusiness();
+    const response = await getUserAdmin();
       setState({
         columns: [
-          { title: 'Name', field: 'name' },
-          { title: 'Business Name', field: 'businessName' },
+          { title: 'First Name', field: 'firstName' },
+          { title: 'Last Name', field: 'lastName' },
           { title: 'Email', field: 'email' },
-          { title: 'Phone', field: 'phone'}
+          { title: 'Phone', field: 'phoneNumber'}
         ],
         data : response.data
       });
@@ -23,13 +23,13 @@ const BusinessViewComponents = () => {
 
   return (
     <MaterialTable
-      title="Business"
+      title="Admin Manager"
       columns={state.columns}
       data={state.data}
       editable={{
         onRowAdd: newData =>
           new Promise(resolve => {
-            saveBusiness(newData)
+            saveUserAdmin(newData)
               .then((result) => {
                 resolve();
                 setState(prevState => {
@@ -41,7 +41,7 @@ const BusinessViewComponents = () => {
           }),
         onRowUpdate: (newData, oldData) =>
            new Promise((resolve, reject) => {
-            updateBusiness(newData)
+            updateUserAdmin(newData)
               .then((result) => {
                 resolve();
                 if (oldData) {
@@ -57,19 +57,24 @@ const BusinessViewComponents = () => {
               })
           }),
         onRowDelete: oldData =>
-          new Promise(resolve => {
-            setTimeout(() => {
-              resolve();
-              setState(prevState => {
-                const data = [...prevState.data];
-                data.splice(data.indexOf(oldData), 1);
-                return { ...prevState, data };
+          new Promise((resolve,reject) => {
+            console.log(oldData.id)
+            deleteUserAdmin(oldData.id)
+              .then((result) => {
+                resolve();
+                setState(prevState => {
+                  const data = [...prevState.data];
+                  data.splice(data.indexOf(oldData), 1);
+                  return { ...prevState, data };
+                });
+              })
+              .catch((err) => {
+                reject(err)
               });
-            }, 600);
           }),
       }}
     />
   );
 }
 
-export default BusinessViewComponents;
+export default BusinessViewComponent;
