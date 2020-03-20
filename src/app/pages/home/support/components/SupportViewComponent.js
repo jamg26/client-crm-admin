@@ -1,80 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import MaterialTable from 'material-table';
-import { getUserAdmin, saveUserAdmin, updateUserAdmin, deleteUserAdmin } from '../../../../services/manager.service';
+import React from 'react';
+import PropTypes from 'prop-types';
+import SwipeableViews from 'react-swipeable-views';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import AppBar from '@material-ui/core/AppBar';
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Typography from '@material-ui/core/Typography';
+//components
+import TicketsAllComponent from './tickets/TicketsAllComponent';
+import TicketsCloseComponent from './tickets/TicketsCloseComponent';
+import TicketsOpenComponent from './tickets/TicketsOpenComponent';
 
-const SupportViewComponent = () => {
-  const [state, setState] = useState(0);
-  
-  useEffect(() => {
-    const fetchData = async () => {
-    const response = await getUserAdmin();
-      setState({
-        columns: [
-          { title: 'First Name', field: 'firstName' },
-          { title: 'Last Name', field: 'lastName' },
-          { title: 'Email', field: 'email' },
-          { title: 'Phone', field: 'phoneNumber'}
-        ],
-        data : response.data
-      });
-    }
-    fetchData();
-  }, []);
-
+function TabContainer({ children, dir }) {
   return (
-    <MaterialTable
-      title="Admin Manager"
-      columns={state.columns}
-      data={state.data}
-      editable={{
-        onRowAdd: newData =>
-          new Promise(resolve => {
-            saveUserAdmin(newData)
-              .then((result) => {
-                resolve();
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.push(newData);
-                  return { ...prevState, data };
-                });
-              })
-          }),
-        onRowUpdate: (newData, oldData) =>
-           new Promise((resolve, reject) => {
-            updateUserAdmin(newData)
-              .then((result) => {
-                resolve();
-                if (oldData) {
-                  setState(prevState => {
-                    const data = [...prevState.data];
-                    data[data.indexOf(oldData)] = newData;
-                    return { ...prevState, data };
-                  });
-                }
-              })
-              .catch((err) => {
-                reject(err)
-              })
-          }),
-        onRowDelete: oldData =>
-          new Promise((resolve,reject) => {
-            console.log(oldData.id)
-            deleteUserAdmin(oldData.id)
-              .then((result) => {
-                resolve();
-                setState(prevState => {
-                  const data = [...prevState.data];
-                  data.splice(data.indexOf(oldData), 1);
-                  return { ...prevState, data };
-                });
-              })
-              .catch((err) => {
-                reject(err)
-              });
-          }),
-      }}
-    />
+    <Typography component="div" dir={dir} style={{ padding: 8 * 3 }}>
+      {children}
+    </Typography>
   );
 }
 
-export default SupportViewComponent;
+TabContainer.propTypes = {
+  children: PropTypes.node.isRequired,
+  dir: PropTypes.string.isRequired,
+};
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    backgroundColor: theme.palette.background.paper,
+    width: '100%',
+  },
+}));
+
+export default function SupportViewComponent() {
+  const classes = useStyles();
+  const theme = useTheme();
+  const [value, setValue] = React.useState(0);
+
+  function handleChange(event, newValue) {
+    setValue(newValue);
+  }
+
+  function handleChangeIndex(index) {
+    setValue(index);
+  }
+
+  return (
+    <div className={classes.root}>
+      <AppBar position="static" color="default">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+        >
+          <Tab label="All" />
+          <Tab label="Open" />
+          <Tab label="Closed" />
+        </Tabs>
+      </AppBar>
+      <SwipeableViews
+        axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
+        index={value}
+        onChangeIndex={handleChangeIndex}
+      >
+        <TabContainer dir={theme.direction}>
+            <TicketsAllComponent/>
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+            <TicketsOpenComponent/>
+        </TabContainer>
+        <TabContainer dir={theme.direction}>
+            <TicketsCloseComponent/>
+        </TabContainer>
+      </SwipeableViews>
+    </div>
+  );
+}
