@@ -31,7 +31,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function SupportViewComponent() {
+export default function SupportViewComponent(props) {
   const classes = useStyles();
   const theme = useTheme();
   const [value, setValue] = React.useState(0);
@@ -65,13 +65,13 @@ export default function SupportViewComponent() {
         onChangeIndex={handleChangeIndex}
       >
         <TabContainer dir={theme.direction}>
-            <TicketsAllComponent/>
+            <TicketsAllComponent props={props}/>
         </TabContainer>
         <TabContainer dir={theme.direction}>
-            <TicketsOpenComponent/>
+            <TicketsOpenComponent props={props}/>
         </TabContainer>
         <TabContainer dir={theme.direction}>
-            <TicketsCloseComponent/>
+            <TicketsCloseComponent props={props}/>
         </TabContainer>
       </SwipeableViews>
     </div>

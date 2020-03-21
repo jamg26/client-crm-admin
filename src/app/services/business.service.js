@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const ROOT_URL = "https://thecrmnetwork20200225035915.azurewebsites.net";
+export const ROOT_URL = process.env.REACT_APP_API_URL;
 export const ROOT_BUSINESS = "admin/business";
 export const GET_BUSINESS = "admin/business/table";
 

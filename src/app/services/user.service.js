@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const ROOT_URL = "https://thecrmnetwork20200225035915.azurewebsites.net";
+export const ROOT_URL = process.env.REACT_APP_API_URL;
 export const LOGIN_URL = "auth";
 export const REGISTER_URL = "api/auth/register";
 export const REQUEST_PASSWORD_URL = "api/auth/forgot-password";

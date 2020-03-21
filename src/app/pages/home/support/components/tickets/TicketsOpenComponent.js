@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
-// import { getBusiness, updateBusiness, saveBusiness } from '../../../../services/business.service';
+import { getOpenSupportTicket } from '../../../../../services/support.service';
 
 const TicketsAllComponent = () => {
   const [state, setState] = useState(0);
   
   useEffect(() => {
     const fetchData = async () => {
-    // const response = await getBusiness();
+    const response = await getOpenSupportTicket();
       setState({
         columns: [
           { title: 'Status', field: 'status' },
