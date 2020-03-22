@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
-import { getBusiness, updateBusiness, saveBusiness } from '../../../../services/business.service';
+import { getBusiness, updateBusiness, saveBusiness, deleteBusiness } from '../../../../services/business.service';
 
 const BusinessViewComponent = () => {
   const [state, setState] = useState(0);
@@ -10,10 +10,11 @@ const BusinessViewComponent = () => {
     const response = await getBusiness();
       setState({
         columns: [
-          { title: 'Name', field: 'name' },
+          { title: 'First name', field: 'firstName' },
+          { title: 'Last name', field: 'lastName' },
           { title: 'Business Name', field: 'businessName' },
           { title: 'Email', field: 'email' },
-          { title: 'Phone', field: 'phone'}
+          { title: 'Phone', field: 'phoneNumber'}
         ],
         data : response.data
       });
@@ -58,14 +59,14 @@ const BusinessViewComponent = () => {
           }),
         onRowDelete: oldData =>
           new Promise(resolve => {
-            setTimeout(() => {
+            deleteBusiness(oldData).then((result) => {
               resolve();
               setState(prevState => {
                 const data = [...prevState.data];
                 data.splice(data.indexOf(oldData), 1);
                 return { ...prevState, data };
               });
-            }, 600);
+            }).catch((err) => console.log(err))
           }),
       }}
     />

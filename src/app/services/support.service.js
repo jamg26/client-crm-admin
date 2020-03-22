@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const ROOT_URL = process.env.REACT_APP_API_URL;
 export const SUPPORT_TICKET = "api/supportticket";
+export const SUPPORT_TICKET_ATTACHMENT = "attachment";
 
 export function getAllSupportTicket(){
     return axios.get(`${ROOT_URL}/${SUPPORT_TICKET}`);
@@ -17,6 +18,10 @@ export function getClosedSupportTicket(){
 
 export function getTicketById(id){
     return axios.get(`${ROOT_URL}/${SUPPORT_TICKET}/${id}`);
+}
+
+export function saveAttachment(file) {
+    return axios.post(`${ROOT_URL}/${SUPPORT_TICKET_ATTACHMENT}`, file);
 }
 
 // export function getBusiness() {

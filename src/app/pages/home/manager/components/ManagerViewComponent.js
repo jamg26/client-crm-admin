@@ -79,7 +79,6 @@ const BusinessViewComponent = () => {
           }),
         onRowDelete: oldData =>
           new Promise((resolve,reject) => {
-            console.log(oldData.id)
             deleteUserAdmin(oldData.id)
               .then((result) => {
                 resolve();
