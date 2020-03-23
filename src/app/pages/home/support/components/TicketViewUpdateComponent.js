@@ -193,10 +193,21 @@ class TicketViewUpdateComponent extends React.Component {
     render(){
         return (
             <>
-              <div className="kt-portlet kt-portlet--height-fluid">
+
+                <div className="kt-portlet">
                 <div className="kt-portlet__head">
                   <div className="kt-portlet__head-label">
                     <h3 className="kt-portlet__head-title">Support Request</h3>
+                  </div>
+                </div>
+                </div>
+
+              <div className="kt-portlet kt-portlet--height-fluid">
+                <div className="kt-portlet__head">
+                  <div className="kt-portlet__head-label">
+                    <h3 className="kt-portlet__head-title">
+                    # { this.state.ticket ? this.state.ticket.supportTicketKey : '' } / { this.state.ticket ? this.state.ticket.description : '' }
+                    </h3>
                   </div>
                   <SupportTicketDropdown />
                 </div>
