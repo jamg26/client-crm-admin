@@ -131,3 +131,8 @@ export function titleCase(str){
 export function removeWhiteSpace(str){
   return str.replace(/\s/g, "");
 }
+
+export function getFileName(str) {
+  let arr = str.split('support/attachment/');
+  return arr[1];
+}
