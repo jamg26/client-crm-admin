@@ -21,14 +21,5 @@ export function updateBusiness(business) {
 }
 
 export function deleteBusiness(id) {
-  return axios.delete(`${ROOT_URL}/${ROOT_BUSINESS}`,  id);
+  return axios.delete(`${ROOT_URL}/${ROOT_BUSINESS}/${id}`,);
 }
-
-// export function editBusiness(id) {
-//   return axios.pat(`${ROOT_URL}/${SAVE_BUSINESS}`, { business });
-// }
-
-// export function getUserByToken() {
-//   // Authorization head should be fulfilled in interceptor.
-//   return axios.get(`${ROOT_URL}/${ME_URL}`);
-// }

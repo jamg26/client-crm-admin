@@ -56,18 +56,7 @@ const BusinessViewComponent = () => {
               .catch((err) => {
                 reject(err)
               })
-          }),
-        onRowDelete: oldData =>
-          new Promise(resolve => {
-            deleteBusiness(oldData).then((result) => {
-              resolve();
-              setState(prevState => {
-                const data = [...prevState.data];
-                data.splice(data.indexOf(oldData), 1);
-                return { ...prevState, data };
-              });
-            }).catch((err) => console.log(err))
-          }),
+          })
       }}
     />
   );

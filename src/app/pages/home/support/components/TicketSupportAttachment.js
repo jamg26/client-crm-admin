@@ -27,7 +27,7 @@ class TicketSupportAttachment extends React.Component{
 
     async deleteAttachment(id){
         deleteAttachment(id)
-            .then(response => console.log(response))
+            .then(response => this.props.onAttachmentChanged(response.data))
             .catch(err => console.log(err))
     }
 
@@ -36,7 +36,7 @@ class TicketSupportAttachment extends React.Component{
            return (
                 <>
                      <ListItem>
-                        <Grid container spacing={3} justify="space-between" key={`grid=${this.state.data.id}`}>
+                        <Grid container spacing={3} justify="space-between">
                             <Grid item xs={6}><ListItemText primary={this.state.data.fileName ? this.state.data.fileName : getFileName(this.state.data.filePath)} /></Grid>
                             <Grid item xs={6}>
                                 <a href={this.state.data.filePath}

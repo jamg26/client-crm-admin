@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import MaterialTable from 'material-table';
-import * as moment from 'moment'
+import * as moment from 'moment';
 import { getAllSupportTicket } from '../../../../../services/support.service';
 
 const TicketsAllComponent = (props) => {

@@ -19,23 +19,40 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider'
-import CommentIcon from '@material-ui/icons/Comment';
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import * as moment from 'moment';
 import { connect } from 'react-redux';
 import { getFileName } from '../../../../../_metronic/utils/utils';
 import { awsServices } from '../../../../services/aws.service';
-import { saveAttachment, getAttachment, getCommentById, saveComment } from '../../../../services/support.service'
+import { saveAttachment, getAttachment, getCommentById, saveComment } from '../../../../services/support.service';
 import TicketSupportAttachment from './TicketSupportAttachment';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import GetAppIcon from '@material-ui/icons/GetApp';
+import { green } from '@material-ui/core/colors';
+import Snackbar from '@material-ui/core/Snackbar';
 
 
 const classes = theme => ({
     root: {
         flexGrow: 1,
-      },
-      paper: {
+    },
+    paper: {
         textAlign: 'center'
-      }
+    },
+    wrapper: {
+        position: 'relative',
+        width:'100%'
+    },
+    buttonProgress: {
+        color: green[500],
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        marginTop: -12,
+        marginLeft: -12,
+    },
 })
 
 
@@ -46,12 +63,17 @@ class TicketViewUpdateComponent extends React.Component {
         this.state = {
             selectedFile: null,
             isUploaded: false,
-            toggleForm: false
+            toggleForm: false,
+            isTemp: true,
+            tempAttachment: [],
+            loading: false,
+            open: false,
+            id: this.props.match.params.id
         }
-        this.id = this.props.match.params.id;
         this.onChangeHandler = this.onChangeHandler.bind(this);
         this.onchangeCommentHandler = this.onchangeCommentHandler.bind(this);
         this.onUpload = this.onUpload.bind(this);
+        this.class = classes();
     }
 
     componentDidMount(){
@@ -60,62 +82,92 @@ class TicketViewUpdateComponent extends React.Component {
        this.getSupportCommentById();
     }
 
+    handleAttachment(attachments){
+        console.log(this.state)
+        getAttachment(this.state.renderCommentid)
+            .then(results => this.setState({attachments: results.data}))
+            .catch(err => console.log(err))
+    }
+
     geSupportTicketData(){
-        getTicketById(this.id)
+        getTicketById(this.state.id)
             .then(results => this.setState({ticket : results.data}))
             .catch(err => console.log(err))
     }
 
     getSupportAttachment(){
-        getAttachment(this.id)
+        getAttachment(this.state.id)
             .then(results => this.setState({attachments: results.data}))
             .catch(err => console.log(err))
     }
 
     getSupportCommentById(){
-        getCommentById(this.id)
+        getCommentById(this.state.id)
         .then(results => this.setState({comments: results.data}))
         .catch(err => console.log(err))
     }
 
     onChangeHandler=event=>{
+        let obj = {
+            name : event.target.files[0].name
+        };
         this.setState({
           selectedFile: event.target.files[0],
           loaded: 0,
-          isUploaded : true
+          isUploaded : true,
+          isTemp: true,
+          tempAttachment: [...this.state.tempAttachment, obj ]
         });
+    }
+
+    handleCloseEvent(event){
+        console.log(event)
     }
 
     onchangeCommentHandler = event => {
         this.setState({comment: event.target.value});
     }
 
-    async onUpload() {
-
-        try {
-            let fleupload = await awsServices(this.state.selectedFile);
-            await this.saveAttachment(fleupload);
-
-        } catch(err){
-            console.log(err)
-        }
+    onUpload() {
+        this.setState({loading:true});
+        awsServices(this.state.selectedFile)
+            .then((response) => {
+                this.saveAttachment(response)
+                    .then((responseData) => {
+                        this.setState({
+                            loading:false,
+                            open:true,
+                            isTemp: false,
+                            isUploaded: false,
+                            message: 'Upload complete',
+                            responseData : responseData
+                        });
+                        setTimeout(() => this.setState({open:false}),4000)
+                    })
+                    .catch(err => console.log(err))
+            }).catch(err => console.log(err))
     }
 
     saveAttachment(data){
-        let file = {
-            supportTicketId : this.state.ticket.id,
-            filePath: data.location,
-            fileName: getFileName(data.location),
-            userId: this.props.user.id
-        }
-        saveAttachment(file)
-            .then(results => this.getSupportAttachment())
-            .catch(err => console.log(err))
+        return new Promise((resolve, reject) =>{
+            let file = {
+                supportTicketId : this.state.ticket.id,
+                filePath: data.location,
+                fileName: getFileName(data.location),
+                userId: this.props.user.id
+            };
+            saveAttachment(file)
+                .then(results => {
+                    this.getSupportAttachment();
+                    resolve(results)
+                })
+                .catch(err => console.log(err)) 
+        })
     }
 
     async saveCommentHandler(){
         let data = {
-            supportTicketId: this.id,
+            supportTicketId: this.state.id,
             userId: this.props.user.id,
             comment: this.state.comment
         };
@@ -124,10 +176,33 @@ class TicketViewUpdateComponent extends React.Component {
         this.setState({comment:''})
     }
 
+    renderTempAttachment(){
+        if (this.state.tempAttachment && this.state.isTemp) {
+            let attachments = this.state.tempAttachment.map((item,key) => 
+            <ListItem key={key}>
+                <Grid container spacing={3} justify="space-between">
+                    <Grid item xs={6}><ListItemText primary={item.name} /></Grid>
+                    <Grid item xs={6}>
+                        <a href="javascript_void(0)">
+                            <IconButton aria-label="download">
+                                <GetAppIcon fontSize="small"/>
+                            </IconButton>
+                        </a>
+                        <IconButton aria-label="Delete">
+                            <DeleteIcon fontSize="small" />
+                        </IconButton>
+                    </Grid>
+                </Grid>
+            </ListItem>
+            )
+            return attachments;
+        }
+    }
+
     renderAttachment(){
         if(this.state.attachments) {
-            let attachments = this.state.attachments.map(item => 
-                <TicketSupportAttachment key={item.id} data={item}/>
+            let attachments = this.state.attachments.map((item,key) => 
+                <TicketSupportAttachment key={key} data={item} onAttachmentChanged={this.handleAttachment}/>
             )
             return attachments;
         } else {
@@ -141,11 +216,11 @@ class TicketViewUpdateComponent extends React.Component {
 
     renderComment(){
         if(this.state.comments) {
-           let comment = this.state.comments.map(item => 
-                <List key={`${item.id}-${item.comment}`} component="nav" className={classes.root} aria-label="Mailbox folders">
+           let comment = this.state.comments.map((item, key) => 
+                <List key={`comment-${key}`} component="nav" className={classes.root} aria-label="Mailbox folders">
                     <ListItem>
                     <Typography>
-                        Derek added a comment - 03/23/20 5:45:22 AM                                     
+                        {item.user.firstName} {item.user.lastName} added a comment - { moment(item.dateCreated).format('LLL') }                               
                     </Typography>
                     </ListItem>
                     <ListItem>
@@ -193,7 +268,6 @@ class TicketViewUpdateComponent extends React.Component {
     render(){
         return (
             <>
-
                 <div className="kt-portlet">
                 <div className="kt-portlet__head">
                   <div className="kt-portlet__head-label">
@@ -209,7 +283,7 @@ class TicketViewUpdateComponent extends React.Component {
                     # { this.state.ticket ? this.state.ticket.supportTicketKey : '' } / { this.state.ticket ? this.state.ticket.description : '' }
                     </h3>
                   </div>
-                  <SupportTicketDropdown />
+                  <SupportTicketDropdown handleClose={this.handleCloseEvent}/>
                 </div>
                 <div className="kt-portlet__body">
                   <div className="kt-widget4">
@@ -270,14 +344,24 @@ class TicketViewUpdateComponent extends React.Component {
                                             </ListItem>
                                             <Divider light />
                                             { this.renderAttachment() }
+                                            { this.renderTempAttachment() }
                                         </List>
                                         </Grid>
                                         <Grid item xs={12}>
-                                            { this.state.isUploaded &&
-                                                <Button variant="contained" color="primary" disableElevation onClick={this.onUpload}>
-                                                    Save
-                                                </Button>
-                                            }
+                                            <div style={this.class.wrapper}>
+                                                { this.state.isUploaded &&
+                                                    <Button 
+                                                        variant="contained"
+                                                        color="primary"
+                                                        disableElevation
+                                                        style={this.class.wrapper}
+                                                        disabled={this.state.loading}
+                                                        onClick={this.onUpload}>
+                                                        Save
+                                                    </Button>
+                                                }
+                                                {this.state.loading && <CircularProgress size={24} style={this.class.buttonProgress}/>}
+                                            </div>
                                         </Grid>
                                     </Grid>
                                 </ExpansionPanelDetails>
@@ -322,6 +406,14 @@ class TicketViewUpdateComponent extends React.Component {
                             </Grid>
                         </Grid>
                     </Grid>
+                    <Snackbar
+                        anchorOrigin={{
+                            vertical: 'top',
+                            horizontal: 'right',
+                        }}
+                        open={this.state.open}
+                        message={this.state.message}
+                    />
                   </div>
                 </div>
               </div>
