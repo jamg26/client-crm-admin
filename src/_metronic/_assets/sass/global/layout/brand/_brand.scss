@@ -17,6 +17,8 @@
 		justify-content: flex-begin;
 
 		img {
+
+			width: 100%;
 			.kt-aside--minimize & {
 				display: none;
 			}

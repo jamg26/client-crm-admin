@@ -161,7 +161,7 @@ class AsideLeft extends React.Component {
           {this.props.disableAsideSelfDisplay && (
             <div className="kt-header-logo">
               <Link to="">
-                <img alt="logo" src={this.props.headerLogo} />
+                <img alt="logo"   style="width:100%;" src={this.props.headerLogo} />
               </Link>
             </div>
           )}

@@ -29,7 +29,7 @@ export const initLayoutConfig = {
   // == Colors for javascript
   colors: {
     state: {
-      brand: "#5d78ff",
+      brand: "#18c466",
       dark: "#282a3c",
       light: "#ffffff",
       primary: "#5867dd",
